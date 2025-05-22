@@ -7,14 +7,28 @@ const SingleCartItem = ({
   isBundled = false,
   mainItemQuantity,
   updateAddons,
-  addonData = {}
+  addonData = {},
+  updateProductOptions,
+  optionsData = {}
 }) => {
   const [hasAddon, setHasAddon] = useState(addonData.addon || false);
+  const [selectedOptions, setSelectedOptions] = useState(optionsData || {});
 
-  // Update state when props change
+  // Update addon state when props change
   useEffect(() => {
     setHasAddon(addonData.addon || false);
   }, [addonData]);
+
+  // Initialize selected options from props or item defaults
+  useEffect(() => {
+    if (item.options) {
+      const initialOptions = {};
+      Object.entries(item.options).forEach(([optionKey, optionData]) => {
+        initialOptions[optionKey] = optionsData[optionKey] || optionData.selected;
+      });
+      setSelectedOptions(initialOptions);
+    }
+  }, [item.options, optionsData]);
 
   const toggleAddon = () => {
     const newState = !hasAddon;
@@ -22,11 +36,24 @@ const SingleCartItem = ({
     updateAddons(item.id, { addon: newState });
   };
 
+  const handleOptionChange = (optionKey, value) => {
+    const newOptions = {
+      ...selectedOptions,
+      [optionKey]: value
+    };
+
+    setSelectedOptions(newOptions);
+    updateProductOptions(item.id, newOptions);
+  };
+
   // Only show addon option if item has an addon price
   const showAddonOption = !isBundled && item.addonPrice && item.addonText;
 
   // Calculate addon cost
   const addonCost = hasAddon && item.addonPrice ? item.addonPrice : 0;
+
+  // Check if the item has any options
+  const hasOptions = !isBundled && item.options && Object.keys(item.options).length > 0;
 
   return (
     <div className={`grid  grid-cols-12 gap-4 items-center py-${isBundled ? '4' : '6'} border-b border-gray-300 ${isBundled ? 'pl-6' : ''}`}>
@@ -39,14 +66,37 @@ const SingleCartItem = ({
           <h3 className={`font-bold text-xl`}>{item.name}</h3>
           <h3 className={`font-bold text-xl text-orange-500`}>{item.highlight}</h3>
           {item.description && <p className={` ${isBundled && 'text-sm'}`}>{item.description}</p>}
-          {!isBundled && item.fuelSource && <p className="text-sm text-gray-600">Fuel Source: {item.fuelSource}</p>}
+
+          {/* Product Options */}
+          {hasOptions && (
+            <div className="mt-2">
+              {Object.entries(item.options).map(([optionKey, optionData]) => (
+                <div key={optionKey}>
+                  <p className="text-sm text-gray-600">{optionData.label}: {selectedOptions[optionKey]}</p>
+                  <button
+                    onClick={() => {
+                      // Open a modal or toggle dropdown visibility
+                      // For now, we'll just cycle through options
+                      const currentIndex = optionData.choices.indexOf(selectedOptions[optionKey]);
+                      const nextIndex = (currentIndex + 1) % optionData.choices.length;
+                      handleOptionChange(optionKey, optionData.choices[nextIndex]);
+                    }}
+                    className="text-sm text-orange-500 hover:text-orange-700"
+                  >
+                    Change
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           {showAddonOption && (
             <div className="mt-3">
               <button
                 onClick={toggleAddon}
                 className={`border rounded px-3 py-1.5 text-sm transition ${hasAddon
-                    ? 'bg-orange-50 border-orange-500 text-orange-700'
-                    : 'border-orange-300 text-orange-600 hover:border-orange-400'
+                  ? 'bg-orange-50 border-orange-500 text-orange-700'
+                  : 'border-orange-300 text-orange-600 hover:border-orange-400'
                   }`}
               >
                 {hasAddon ? '✓ ' : ''}{item.addonText} ${item.addonPrice.toFixed(2)}
@@ -56,7 +106,7 @@ const SingleCartItem = ({
         </div>
       </div>
 
-      <div className="col-span-4 md:col-span-2 text-right">
+      <div className="col-span-4 md:col-span-2 text-left">
         <span className={`md:hidden text-gray-600 ${isBundled && 'text-sm'}`}>Price: </span>
         <span className="text-gray-700">
           ${item.price.toFixed(2)}

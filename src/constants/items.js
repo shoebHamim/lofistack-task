@@ -4,10 +4,17 @@ export const CART_ITEMS = [
     brand: '',
     name: 'Pi Pizza Oven',
     highlight: '(Estimated Ship Date: June 6th)',
-    description: 'Fuel Source: Wood Only',
+    description: '',
     price: 469.99,
     quantity: 1,
-    image: 'images/pi-pizza-oven.jpg'
+    image: 'images/pi-pizza-oven.jpg',
+    options: {
+      fuelSource: {
+        label: 'Fuel Source',
+        choices: ['Wood Only', 'Wood & Gas', 'Gas Only'],
+        selected: 'Wood Only'
+      }
+    }
   },
   {
     id: 2,
