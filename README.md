@@ -2,7 +2,7 @@
 
 A modern, responsive shopping cart application built with React and TailwindCSS. This project demonstrates a fully functional e-commerce shopping cart with features like product options, add-ons, coupon codes, and more.
 
-![Shopping Cart Demo](https://via.placeholder.com/800x400?text=Shopping+Cart+Demo)
+Live: [Shopping Cart Demo](https://lofistack-task.netlify.app/)
 
 ## Features
 
@@ -83,11 +83,4 @@ The output will be in the `dist` folder.
     /Cart.jsx         # Main cart page
 ```
 
-## License
 
-[MIT](LICENSE)
-
-## Acknowledgments
-
-- Design inspiration from modern e-commerce platforms
-- Icons and illustrations from [Heroicons](https://heroicons.com/)
