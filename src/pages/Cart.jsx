@@ -20,18 +20,17 @@ const Cart = () => {
   const removeItem = (id) => {
     const remainingItems = items.filter(item => item.id !== id);
     setItems(remainingItems);
-    if(remainingItems.length == 0){
+    if (remainingItems.length == 0) {
       setItems([])
       setAddons({})
       setProductOptions({})
       setDiscount(0)
     }
-    // Also remove any addons for this item
     const newAddons = { ...addons };
     delete newAddons[id];
     setAddons(newAddons);
 
-    // Remove product options
+
     const newOptions = { ...productOptions };
     delete newOptions[id];
     setProductOptions(newOptions);
@@ -52,10 +51,9 @@ const Cart = () => {
   };
 
   const calculateSubtotal = () => {
-    // Base price of items
+
     const itemsTotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    // Add addon costs
     const addonTotal = Object.entries(addons).reduce((sum, [itemId, itemAddons]) => {
       const item = items.find(i => i.id.toString() === itemId.toString());
       if (!item || !item.addonPrice) return sum;
@@ -78,7 +76,7 @@ const Cart = () => {
   const total = subtotal + tax - discount;
 
   const applyCoupon = (couponCode) => {
-    if(items.length == 0){
+    if (items.length == 0) {
       return false;
     }
     if (couponCode === 'LOFI10') {

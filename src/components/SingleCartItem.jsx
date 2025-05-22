@@ -14,12 +14,10 @@ const SingleCartItem = ({
   const [hasAddon, setHasAddon] = useState(addonData.addon || false);
   const [selectedOptions, setSelectedOptions] = useState(optionsData || {});
 
-  // Update addon state when props change
   useEffect(() => {
     setHasAddon(addonData.addon || false);
   }, [addonData]);
 
-  // Initialize selected options from props or item defaults
   useEffect(() => {
     if (item.options) {
       const initialOptions = {};
@@ -46,17 +44,14 @@ const SingleCartItem = ({
     updateProductOptions(item.id, newOptions);
   };
 
-  // Only show addon option if item has an addon price
   const showAddonOption = !isBundled && item.addonPrice && item.addonText;
 
-  // Calculate addon cost
   const addonCost = hasAddon && item.addonPrice ? item.addonPrice : 0;
 
-  // Check if the item has any options
   const hasOptions = !isBundled && item.options && Object.keys(item.options).length > 0;
 
   return (
-    <div className={`grid  grid-cols-12 gap-4 items-center py-${isBundled ? '4' : '6'} border-b border-gray-300 ${isBundled ? 'pl-6' : ''}`}>
+    <div className={`grid py-3  grid-cols-12 gap-4 items-center py-${isBundled ? '4' : '6'} border-b border-gray-300 ${isBundled ? 'pl-6' : ''}`}>
       <div className="col-span-12 md:col-span-6 flex gap-4 items-center">
         <div className={`${isBundled ? 'w-16 h-16' : 'w-20 h-20'} flex-shrink-0 p-2 rounded-md`}>
           <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
